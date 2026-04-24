@@ -1,338 +1,195 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transmission Finale</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transmission du Lynx</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      background:
-        radial-gradient(circle at top, rgba(90, 70, 35, 0.18), transparent 30%),
-        linear-gradient(180deg, #0b0b0b 0%, #141414 100%);
-      color: #f2e6ca;
-      font-family: "Courier New", monospace;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
+<style>
+body {
+    background:black;
+    color:#00ff9c;
+    font-family:"Courier New", monospace;
+    text-align:center;
+    padding:20px;
+}
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          rgba(255,255,255,0.015) 0px,
-          rgba(255,255,255,0.015) 1px,
-          transparent 2px,
-          transparent 4px
-        );
-      opacity: 0.25;
-      mix-blend-mode: soft-light;
-    }
+.container {
+    max-width:500px;
+    margin:auto;
+    border:2px solid #00ff9c;
+    padding:20px;
+    border-radius:10px;
+}
 
-    .card {
-      width: 100%;
-      max-width: 520px;
-      background:
-        linear-gradient(rgba(28,23,18,0.96), rgba(18,16,14,0.98)),
-        #1b1b1b;
-      border: 2px solid #7a5c2e;
-      border-radius: 16px;
-      padding: 20px 14px;
-      text-align: center;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.04) inset,
-        0 14px 35px rgba(0,0,0,0.65),
-        0 0 18px rgba(122,92,46,0.16);
-      position: relative;
-    }
+button {
+    display:block;
+    margin:10px auto;
+    padding:12px;
+    width:90%;
+    background:black;
+    color:#00ff9c;
+    border:1px solid #00ff9c;
+    font-size:16px;
+}
 
-    .topline {
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: #b79a65;
-      margin-bottom: 8px;
-      opacity: 0.9;
-    }
+button:active {
+    background:#00ff9c;
+    color:black;
+}
 
-    .symbol {
-      font-size: 24px;
-      color: #b79a65;
-      margin-bottom: 6px;
-      text-shadow: 0 0 8px rgba(183,154,101,0.15);
-    }
+.glitch {
+    animation: glitch 0.2s infinite;
+}
 
-    h1 {
-      margin: 0 0 8px;
-      font-size: 22px;
-      letter-spacing: 2px;
-      color: #9ecaff;
-      text-transform: uppercase;
-      line-height: 1.2;
-    }
-
-    .subtitle {
-      font-size: 13px;
-      line-height: 1.5;
-      opacity: 0.86;
-      margin-bottom: 16px;
-    }
-
-    .launch-btn {
-      background: linear-gradient(180deg, #9b7545, #7f5d35);
-      border: none;
-      color: white;
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-size: 15px;
-      cursor: pointer;
-      width: 100%;
-      max-width: 100%;
-      font-family: inherit;
-      letter-spacing: 0.5px;
-      transition: 0.2s ease;
-    }
-
-    .launch-btn:hover {
-      filter: brightness(1.06);
-      transform: translateY(-1px);
-    }
-
-    .screen {
-      margin-top: 16px;
-      padding: 14px;
-      min-height: 190px;
-      border-radius: 12px;
-      background: #111;
-      border: 1px solid rgba(183,154,101,0.16);
-      text-align: left;
-      line-height: 1.6;
-      font-size: 14px;
-      box-shadow: inset 0 0 12px rgba(255,255,255,0.02);
-      white-space: pre-line;
-      word-break: break-word;
-    }
-
-    .cursor {
-      display: inline-block;
-      width: 8px;
-      animation: blink 0.9s step-end infinite;
-      color: #9ecaff;
-      font-weight: bold;
-    }
-
-    .final-line {
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 10px;
-      background: rgba(158,202,255,0.08);
-      border: 1px solid rgba(158,202,255,0.18);
-      color: #dcebff;
-      font-weight: bold;
-      text-align: center;
-      display: none;
-      animation: fadeIn 0.5s ease;
-      line-height: 1.6;
-      font-size: 15px;
-    }
-
-    .footer {
-      margin-top: 16px;
-      font-size: 10px;
-      opacity: 0.6;
-      letter-spacing: 1px;
-      text-align: center;
-    }
-
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 380px) {
-      .card {
-        padding: 16px 10px;
-      }
-
-      h1 {
-        font-size: 18px;
-      }
-
-      .subtitle {
-        font-size: 12px;
-      }
-
-      .launch-btn {
-        font-size: 14px;
-        padding: 10px 12px;
-      }
-
-      .screen {
-        font-size: 13px;
-        min-height: 170px;
-        padding: 12px;
-      }
-
-      .final-line {
-        font-size: 14px;
-        padding: 12px;
-      }
-    }
-  </style>
+@keyframes glitch {
+    0% {opacity:1;}
+    50% {opacity:0.3;}
+    100% {opacity:1;}
+}
+</style>
 </head>
+
 <body>
-  <div class="card">
-    <div class="topline">Transmission finale</div>
-    <div class="symbol">✠</div>
-    <h1>Mission accomplie</h1>
-    <div class="subtitle">
-      Le message final a été intercepté.<br>
-      Activez la transmission.
-    </div>
 
-    <div style="text-align:center;">
-      <button class="launch-btn" onclick="startTransmission()">LANCER LA TRANSMISSION</button>
-    </div>
+<div class="container">
+<h2>📡 Transmission du Lynx</h2>
+<div id="question">Connexion...</div>
+</div>
 
-    <div class="screen" id="screen">En attente d’activation…</div>
+<script>
 
-    <div class="final-line" id="finalLine">
-      VOUS ÊTES SOUS LE HANGAR.<br>
-      VOUS AVEZ RÉUSSI LA MISSION.<br>
-      TROUVEZ LA BOÎTE FINALE.
-    </div>
+let step = 0;
 
-    <div class="footer">VIVRE LIBRE OU MOURIR</div>
-  </div>
+const questions = [
 
-  <script>
-    let audioCtx;
-    let ambienceInterval;
-    let typingStarted = false;
+{
+q: "Quel symbole possède deux barres horizontales ?",
+a: ["Croix simple", "Croix de Lorraine", "Triangle"],
+correct: 1
+},
 
-    const lines = [
-      "Connexion au réseau en cours…",
-      "Signal stabilisé…",
-      "Unité reconnue…",
-      "",
-      "Félicitations.",
-      "Vous avez mené la mission jusqu'au bout.",
-      "",
-      "Le Lynx confirme votre réussite.",
-      "Vous êtes arrivés au bon endroit.",
-      "",
-      "La dernière étape commence maintenant."
-    ];
+{
+q: "Ce symbole appartient à quelle époque ?",
+a: ["Antiquité", "Seconde Guerre mondiale", "Moyen Âge"],
+correct: 1
+},
 
-    function beep(freq = 900, duration = 25, volume = 0.02, type = "square") {
-      try {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContextClass) return;
-        if (!audioCtx) audioCtx = new AudioContextClass();
+{
+q: "Quel mouvement l’utilise ?",
+a: ["Résistance", "Empire", "Monarchie"],
+correct: 0
+},
 
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+{
+q: "Qui incarne la France libre ?",
+a: ["Napoléon", "De Gaulle", "Louis XIV"],
+correct: 1
+},
 
-        osc.type = type;
-        osc.frequency.value = freq;
-        gain.gain.value = volume;
+{
+q: "Ce symbole s’oppose à quoi ?",
+a: ["Occupation allemande", "République", "Église"],
+correct: 0
+},
 
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
+{
+q: "Combien de barres possède ce symbole ?",
+a: ["1", "2", "3"],
+correct: 1
+},
 
-        osc.start();
-        setTimeout(() => {
-          osc.stop();
-        }, duration);
-      } catch (e) {}
-    }
+{
+q: "Quel est ce symbole ?",
+a: ["Croix grecque", "Croix de Lorraine", "Croix latine"],
+correct: 1
+},
 
-    function playAmbience() {
-      stopAmbience();
-      ambienceInterval = setInterval(() => {
-        const r = Math.random();
+{
+q: "Année clé du début de la Résistance ?",
+a: ["1939", "1940", "1945"],
+correct: 1
+}
 
-        if (r < 0.45) {
-          beep(120 + Math.random() * 40, 120, 0.01, "sine");
-        } else if (r < 0.75) {
-          beep(220 + Math.random() * 60, 80, 0.008, "triangle");
+];
+
+function showQuestion() {
+
+    let q = questions[step];
+
+    let html = "<p class='glitch'>Décodage...</p>";
+
+    document.getElementById("question").innerHTML = html;
+
+    setTimeout(() => {
+        html = "<p>" + q.q + "</p>";
+
+        q.a.forEach((rep, i) => {
+            html += "<button onclick='check(" + i + ")'>" + rep + "</button>";
+        });
+
+        document.getElementById("question").innerHTML = html;
+
+    }, 600);
+}
+
+function check(i) {
+
+    if(i === questions[step].correct) {
+
+        step++;
+
+        if(step >= questions.length) {
+
+            confetti({
+                particleCount: 150,
+                spread: 90
+            });
+
+            typeMessage(
+            "✔ Transmission validée...\n\n" +
+            "Signal du Lynx confirmé.\n\n" +
+            "Une cache a été laissée sur place.\n\n" +
+            "➡ Fouillez sous le hangar.\n" +
+            "➡ Trouvez la boîte.\n\n" +
+            "Votre chef de groupe vous y attend.\n\n" +
+            "Fin de transmission."
+            );
+
         } else {
-          beep(70 + Math.random() * 30, 180, 0.006, "sawtooth");
-        }
-      }, 900);
-    }
 
-    function stopAmbience() {
-      if (ambienceInterval) {
-        clearInterval(ambienceInterval);
-        ambienceInterval = null;
-      }
-    }
+            document.getElementById("question").innerHTML =
+            "<p class='glitch'>Signal validé...</p>";
 
-    async function typeText(target, text, speed = 40) {
-      target.innerHTML = "";
-      const cursor = document.createElement("span");
-      cursor.className = "cursor";
-      cursor.textContent = "█";
-      target.appendChild(cursor);
-
-      for (let i = 0; i < text.length; i++) {
-        const ch = text[i];
-        cursor.insertAdjacentText("beforebegin", ch);
-
-        if (ch !== "\n" && ch !== " ") {
-          beep(1000 + Math.random() * 250, 18, 0.012, "square");
+            setTimeout(showQuestion, 500);
         }
 
-        await new Promise(resolve => setTimeout(resolve, speed));
-      }
+    } else {
+        alert("⛔ Mauvaise réponse");
+    }
+}
 
-      cursor.remove();
+function typeMessage(text) {
+    let i = 0;
+    let container = document.getElementById("question");
+    container.innerHTML = "";
+
+    function type() {
+        if (i < text.length) {
+            container.innerHTML += text.charAt(i) === "\n" ? "<br>" : text.charAt(i);
+            i++;
+            setTimeout(type, 25);
+        }
     }
 
-    async function startTransmission() {
-      if (typingStarted) return;
-      typingStarted = true;
+    type();
+}
 
-      const screen = document.getElementById("screen");
-      const finalLine = document.getElementById("finalLine");
+setTimeout(showQuestion, 800);
 
-      screen.textContent = "";
-      finalLine.style.display = "none";
+</script>
 
-      playAmbience();
-
-      const fullText = lines.join("\n");
-      await typeText(screen, fullText, 40);
-
-      setTimeout(() => {
-        finalLine.style.display = "block";
-        beep(900, 100, 0.02, "square");
-        setTimeout(() => beep(1150, 140, 0.02, "square"), 140);
-      }, 400);
-    }
-  </script>
 </body>
 </html>
