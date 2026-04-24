@@ -35,9 +35,10 @@ button {
     font-size:16px;
 }
 
-button:active {
-    background:#00ff9c;
-    color:black;
+.symbol {
+    font-size:28px;
+    margin:15px 0;
+    line-height:1.4;
 }
 
 .glitch {
@@ -66,49 +67,85 @@ let step = 0;
 const questions = [
 
 {
-q: "Quel symbole possède deux barres horizontales ?",
-a: ["Croix simple", "Croix de Lorraine", "Triangle"],
-correct: 1
-},
-
-{
-q: "Ce symbole appartient à quelle époque ?",
-a: ["Antiquité", "Seconde Guerre mondiale", "Moyen Âge"],
-correct: 1
-},
-
-{
-q: "Quel mouvement l’utilise ?",
-a: ["Résistance", "Empire", "Monarchie"],
+q: "Observe ce symbole :",
+symbol: `
+   |
+---+---
+   |
+`,
+a: ["Croix simple", "Croix de Lorraine", "Symbole militaire"],
 correct: 0
 },
 
 {
-q: "Qui incarne la France libre ?",
-a: ["Napoléon", "De Gaulle", "Louis XIV"],
-correct: 1
-},
-
-{
-q: "Ce symbole s’oppose à quoi ?",
-a: ["Occupation allemande", "République", "Église"],
+q: "Et celui-ci :",
+symbol: `
+   |
+===+===
+   |
+---+---
+   |
+`,
+a: ["Croix de Lorraine", "Croix simple", "Symbole inconnu"],
 correct: 0
 },
 
 {
-q: "Combien de barres possède ce symbole ?",
+q: "Ce symbole possède combien de barres horizontales ?",
+symbol: `
+===+===
+---+---
+`,
 a: ["1", "2", "3"],
 correct: 1
 },
 
 {
-q: "Quel est ce symbole ?",
-a: ["Croix grecque", "Croix de Lorraine", "Croix latine"],
+q: "Ce symbole est utilisé pendant :",
+symbol: `
+===+===
+---+---
+`,
+a: ["Moyen Âge", "Seconde Guerre mondiale", "Antiquité"],
 correct: 1
 },
 
 {
-q: "Année clé du début de la Résistance ?",
+q: "Il est utilisé par :",
+symbol: `
+===+===
+---+---
+`,
+a: ["La Résistance", "Les Romains", "Les rois"],
+correct: 0
+},
+
+{
+q: "Quel est ce symbole ?",
+symbol: `
+===+===
+---+---
+`,
+a: ["Croix latine", "Croix de Lorraine", "Croix grecque"],
+correct: 1
+},
+
+{
+q: "Ce symbole est lié à quel homme ?",
+symbol: `
+===+===
+---+---
+`,
+a: ["Napoléon", "De Gaulle", "Louis XVI"],
+correct: 1
+},
+
+{
+q: "Année clé associée à ce symbole ?",
+symbol: `
+===+===
+---+---
+`,
 a: ["1939", "1940", "1945"],
 correct: 1
 }
@@ -119,12 +156,16 @@ function showQuestion() {
 
     let q = questions[step];
 
-    let html = "<p class='glitch'>Décodage...</p>";
-
-    document.getElementById("question").innerHTML = html;
+    document.getElementById("question").innerHTML =
+    "<p class='glitch'>Décodage...</p>";
 
     setTimeout(() => {
-        html = "<p>" + q.q + "</p>";
+
+        let html = "<p>" + q.q + "</p>";
+
+        if(q.symbol){
+            html += "<div class='symbol'>" + q.symbol + "</div>";
+        }
 
         q.a.forEach((rep, i) => {
             html += "<button onclick='check(" + i + ")'>" + rep + "</button>";
@@ -150,11 +191,10 @@ function check(i) {
 
             typeMessage(
             "✔ Transmission validée...\n\n" +
-            "Signal du Lynx confirmé.\n\n" +
-            "Une cache a été laissée sur place.\n\n" +
-            "➡ Fouillez sous le hangar.\n" +
-            "➡ Trouvez la boîte.\n\n" +
-            "Votre chef de groupe vous y attend.\n\n" +
+            "Symbole identifié : Croix de Lorraine\n\n" +
+            "Code obtenu : 1940\n\n" +
+            "➡ Fouillez sous le hangar\n" +
+            "➡ Trouvez la boîte\n\n" +
             "Fin de transmission."
             );
 
